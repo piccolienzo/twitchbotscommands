@@ -10,10 +10,12 @@ const router = express.Router();
 
 // Endpoint que maneja las opciones y probabilidades
 router.get('/choice', (req, res) => {
+    res.setHeader('Content-Type', 'text/plain');
+
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'q' y 'p')
     const options = req.query.q ? req.query.q.split(',') : [];
     const probabilities = req.query.p ? req.query.p.split(',').map(p => parseFloat(p)) : [];
-
+console.log(options)
     // Verificar que se haya enviado al menos una opción
     if (options.length === 0) {
         return res.status(400).send('Debe enviar al menos una opción');
@@ -70,11 +72,13 @@ router.get('/choice', (req, res) => {
     }
 
     // Responder con la opción seleccionada
-    res.send(selectedOption);
+    res.status(200).send(selectedOption);
 });
 
 
 app.use('/.netlify/functions/server', router);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 export const handler = serverless(app);
 // Iniciar el servidor
  app.listen(port, () => {
