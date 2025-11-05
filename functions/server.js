@@ -10,6 +10,8 @@ const router = express.Router();
 
 // Endpoint que maneja las opciones y probabilidades
 router.get('/choice', (req, res) => {
+    res.setHeader('Content-Type', 'application/json'); 
+
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'q' y 'p')
     const options = req.query.q ? req.query.q.split(',') : [];
     const probabilities = req.query.p ? req.query.p.split(',').map(p => parseFloat(p)) : [];
@@ -70,7 +72,7 @@ router.get('/choice', (req, res) => {
     }
 
     // Responder con la opción seleccionada
-    res.send(selectedOption);
+    res.json(selectedOption);
 });
 
 

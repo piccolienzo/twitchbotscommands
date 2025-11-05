@@ -10,13 +10,11 @@ const router = express.Router();
 
 // Endpoint que maneja las opciones y probabilidades
 router.get('/choice', (req, res) => {
-    res.setHeader('Content-Type', 'text/plain');
-
+ res.setHeader('Content-Type', 'application/json');
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'q' y 'p')
     const options = req.query.q ? req.query.q.split(',') : [];
     const probabilities = req.query.p ? req.query.p.split(',').map(p => parseFloat(p)) : [];
-console.log(options)
-    // Verificar que se haya enviado al menos una opción
+     // Verificar que se haya enviado al menos una opción
     if (options.length === 0) {
         return res.status(400).send('Debe enviar al menos una opción');
     }
@@ -72,7 +70,7 @@ console.log(options)
     }
 
     // Responder con la opción seleccionada
-    res.status(200).send(selectedOption);
+    return res.status(200).json({result:selectedOption});
 });
 
 
@@ -81,6 +79,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 export const handler = serverless(app);
 // Iniciar el servidor
- app.listen(port, () => {
-     console.log(`Server running at http://localhost:${port}`);
+ app.listen(4000, () => {
+     console.log(`sServer running at http://localhost:${port}`);
  });
