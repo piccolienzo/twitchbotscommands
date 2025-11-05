@@ -1,6 +1,6 @@
-const express = require('express');
-const serverless= require('serverless-http');
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+import serverless from "serverless-http";
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -9,7 +9,7 @@ app.use(cors())
 const router = express.Router();
 
 // Endpoint que maneja las opciones y probabilidades
-app.get('/choice', (req, res) => {
+router.get('/choice', (req, res) => {
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'q' y 'p')
     const options = req.query.q ? req.query.q.split(',') : [];
     const probabilities = req.query.p ? req.query.p.split(',').map(p => parseFloat(p)) : [];
