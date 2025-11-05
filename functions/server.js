@@ -8,21 +8,34 @@ app.use(cors())
 
 const router = express.Router();
 
-// Endpoint que maneja las opciones y probabilidades
 router.get('/choice', (req, res) => {
 
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'o' y 'p')
-    const options = req.query.o ? req.query.o.split(',') : [];
-    const probabilities = req.query.p ? req.query.p.split(',').map(p => parseFloat(p)) : [];
+    const options = req.query.o ? req.query.o.split(',').map(opt => opt.trim()) : [];
+    
+    // Convertir las probabilidades a números, si es posible
+    let probabilities = req.query.p ? req.query.p.split(',').map(p => {
+        let num = parseFloat(p); // Convertir a número
+        return isNaN(num) ? null : num; // Validar si es un número válido
+    }) : [];
 
-    // Verificar que se haya enviado al menos una opción
+    // Verificar que las opciones sean válidas (al menos una opción)
     if (options.length === 0) {
         return res.status(400).send('Debe enviar al menos una opción');
     }
 
+    // Verificar que todas las probabilidades sean números válidos
+    if (probabilities.includes(null)) {
+        return res.status(400).send('Todas las probabilidades deben ser números válidos');
+    }
+
+    // Verificar que la suma de probabilidades sea 100 (si son válidas)
+    if (probabilities.length > 0 && probabilities.reduce((sum, p) => sum + p, 0) !== 100) {
+        return res.status(400).send('La suma de las probabilidades debe ser 100');
+    }
+
     // Caso 1: Si el número de opciones es igual al número de probabilidades
     if (options.length === probabilities.length) {
-        // Las probabilidades ya están bien definidas
         if (probabilities.reduce((sum, p) => sum + p, 0) !== 100) {
             return res.status(400).send('La suma de las probabilidades debe ser 100');
         }
@@ -78,6 +91,6 @@ router.get('/choice', (req, res) => {
 app.use('/.netlify/functions/server', router);
 export const handler = serverless(app);
 // Iniciar el servidor
- app.listen(port, () => {
-     console.log(`Server running at http://localhost:${port}`);
- });
+//  app.listen(port, () => {
+//      console.log(`Server running at http://localhost:${port}`);
+//  });
