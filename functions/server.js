@@ -1,7 +1,12 @@
 const express = require('express');
+const serverless= require('serverless-http');
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors())
+
+const router = express.Router();
 // Endpoint que maneja las opciones y probabilidades
 app.get('/choice', (req, res) => {
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'q' y 'p')
@@ -67,7 +72,10 @@ app.get('/choice', (req, res) => {
     res.send(selectedOption);
 });
 
+
+app.use('/.netlify/functions/server', router);
+export const handler = serverless(app);
 // Iniciar el servidor
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server running at http://localhost:${port}`);
+// });
