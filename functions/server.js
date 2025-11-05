@@ -7,6 +7,7 @@ const port = process.env.PORT || 3000;
 app.use(cors())
 
 const router = express.Router();
+
 // Endpoint que maneja las opciones y probabilidades
 app.get('/choice', (req, res) => {
     // Obtener las opciones y probabilidades de los parámetros URL (cambiados a 'q' y 'p')
